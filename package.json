@@ -1,6 +1,6 @@
 {
   "name": "trovit-next-routes",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "description": "Easy to use universal dynamic routes for Next.js",
   "repository": "trovit/next-routes",
   "main": "dist",
