@@ -138,7 +138,7 @@ class Route {
 
   valuesToParams (values) {
     const defaultParams = this.params instanceof Object ? this.params : {}
-    return values.reduce((params, val, i) => Object.assign(params, {
+    return values.reduce((params, val, i) => !val ? params : Object.assign(params, {
       [this.keys[i].name]: val
     }), defaultParams)
   }
