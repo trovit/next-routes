@@ -126,7 +126,7 @@ class Route {
     this.regex = pathToRegexp(this.pattern, this.keys = [])
     this.keyNames = this.keys.map(key => key.name)
     this.toPath = pathToRegexp.compile(this.pattern)
-    this.params = params
+    this.params = Object.assign({}, params, { routeName: name })
   }
 
   match (path) {
@@ -150,7 +150,7 @@ class Route {
   getAs (params = {}) {
     const as = this.toPath(params)
     const keys = Object.keys(params)
-    const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1)
+    const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1 && key !== 'routeName')
 
     if (!qsKeys.length) return as
 
