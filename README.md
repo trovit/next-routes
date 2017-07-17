@@ -1,12 +1,18 @@
 # Dynamic Routes for Next.js
 
-[![npm version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=js&type=6&v=1.0.40&x2=0)](https://www.npmjs.com/package/trovit-next-routes) [![Coverage Status](https://coveralls.io/repos/github/trovit/next-routes/badge.svg)](https://coveralls.io/github/trovit/next-routes) [![Build Status](https://travis-ci.org/trovit/next-routes.svg?branch=master)](https://travis-ci.org/trovit/next-routes)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![Coverage Status](https://coveralls.io/repos/github/trovit/next-routes/badge.svg)](https://coveralls.io/github/trovit/next-routes)
+[![Build Status](https://travis-ci.org/trovit/next-routes.svg?branch=master)](https://travis-ci.org/trovit/next-routes)
 
 Easy to use universal dynamic routes for [Next.js](https://github.com/zeit/next.js)
 
 - Express-style route and parameters matching
 - Request handler middleware for express & co
 - `Link` and `Router` that generate URLs by route definition
+
+----
+> NOTE: This project was forked from [next-routes](https://github.com/fridays/next-routes) on version 1.0.40.
+----
 
 ## How to use
 
@@ -22,11 +28,12 @@ Create `routes.js` inside your project:
 const routes = module.exports = require('next-routes')()
 
 routes
-.add('about')
-.add('blog', '/blog/:slug')
-.add('user', '/user/:id', 'profile')
-.add('/:noname/:lang(en|es)/:wow+', 'complex')
-.add({name: 'beta', pattern: '/v3', page: 'v3'})
+  .add('about')
+  .add('blog', '/blog/:slug')
+  .add('user', '/user/:id', 'profile')
+  .add('/:noname/:lang(en|es)/:wow+', 'complex')
+  .add({name: 'beta', pattern: '/v3', page: 'v3'})
+  .add({name: 'beta', pattern: '/:noname/:lang', page: 'v3', params: {type: 2}})
 ```
 
 This file is used both on the server and the client.
@@ -42,8 +49,13 @@ Arguments:
 - `name` - Route name
 - `pattern` - Route pattern (like express, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp))
 - `page` - Page inside `./pages` to be rendered
+- `object` - Contains properties `name`, `pattern` and `page` in addition to `params` that is an object with extra properties that will be added to the `query` object. It can be used to set default value or to attach new properties.
 
-The page component receives the matched URL parameters merged into `query`
+The page component receives the matched URL parameters merged into `query`. The `query` will receive:
+
+- Matched properties on the pattern
+- Extra properties specified in the `params` object
+- A `routeName` property with the value of the `name` param. 
 
 ```javascript
 export default class Blog extends React.Component {
