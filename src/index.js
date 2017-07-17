@@ -126,7 +126,7 @@ class Route {
     this.regex = pathToRegexp(this.pattern, this.keys = [])
     this.keyNames = this.keys.map(key => key.name)
     this.toPath = pathToRegexp.compile(this.pattern)
-    this.params = Object.assign({}, params, { routeName: name })
+    this.params = Object.assign({}, params, { routeName: name })  // Add extra params 'routeName' automatically
   }
 
   match (path) {
@@ -144,17 +144,19 @@ class Route {
   }
 
   getHref (params = {}) {
-    return `${this.page}?${toQuerystring(params)}`
+    // Add extra params to href
+    return `${this.page}?${toQuerystring(Object.assign({}, this.params, params))}`
   }
 
   getAs (params = {}) {
     const as = this.toPath(params)
     const keys = Object.keys(params)
-    const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1 && key !== 'routeName')
+    const qsKeys = keys.filter(key => this.keyNames.indexOf(key))
 
     if (!qsKeys.length) return as
 
-    const qsParams = qsKeys.reduce((qs, key) => Object.assign(qs, {
+    // Do not return 'routeName', otherwise it will be visible in the URL
+    const qsParams = qsKeys.reduce((qs, key) => (key === 'routeName') ? qs : Object.assign(qs, {
       [key]: params[key]
     }), {})
 
