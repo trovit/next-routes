@@ -151,12 +151,12 @@ class Route {
   getAs (params = {}) {
     const as = this.toPath(params)
     const keys = Object.keys(params)
-    const qsKeys = keys.filter(key => this.keyNames.indexOf(key))
+    const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1 && key !== 'routeName')
 
     if (!qsKeys.length) return as
 
     // Do not return 'routeName', otherwise it will be visible in the URL
-    const qsParams = qsKeys.reduce((qs, key) => (key === 'routeName') ? qs : Object.assign(qs, {
+    const qsParams = qsKeys.reduce((qs, key) => Object.assign(qs, {
       [key]: params[key]
     }), {})
 
