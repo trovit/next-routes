@@ -63,9 +63,9 @@ describe('Routes', () => {
   test('generate urls from params', () => {
     const {route} = setup('a', '/a/:b/:c+')
     const params = {b: 'b', c: [1, 2], d: 'd'}
-    const expected = {as: '/a/b/1/2?d=d', href: '/a?b=b&c=1%2F2&d=d'}
+    const expected = {as: '/a/b/1/2?d=d', href: '/a?routeName=a&b=b&c=1%2F2&d=d'}
     expect(route.getUrls(params)).toEqual(expected)
-    expect(setup('a').route.getUrls()).toEqual({as: '/a', href: '/a?'})
+    expect(setup('a').route.getUrls()).toEqual({as: '/a', href: '/a?routeName=a'})
   })
 
   test('with custom Link and Router', () => {
