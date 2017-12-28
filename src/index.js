@@ -130,8 +130,6 @@ class Route {
       routeName: name,
       pageName: page
     })
-
-    console.log('---> NEW ROUTE', this)
   }
 
   match (path) {

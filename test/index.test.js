@@ -188,6 +188,13 @@ describe(`Router ${routerMethods.join(', ')}`, () => {
     testMethods(['/a', {}], [href, as, {}])
   })
 
+  test('with encoded route url', () => {
+    const {routes, testMethods} = setup('/â', 'a')
+    const {route, query} = routes.match('/%C3%A2')
+    const {as, href} = route.getUrls(query)
+    testMethods(['/â', {}], [href, as, {}])
+  })
+
   test('with route not found', () => {
     setup('a').testMethods(['/b', {}], ['/b', '/b', {}])
   })
