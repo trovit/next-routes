@@ -188,7 +188,7 @@ describe(`Router ${routerMethods.join(', ')}`, () => {
     testMethods(['/a', {}], [href, as, {}])
   })
 
-  test('with encoded route url', () => {
+  test('with route with url', () => {
     const {routes, testMethods} = setup('/â', 'a')
     const {route, query} = routes.match('/%C3%A2')
     const {as, href} = route.getUrls(query)
