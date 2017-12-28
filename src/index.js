@@ -128,12 +128,14 @@ class Route {
     this.toPath = pathToRegexp.compile(this.pattern)
     this.params = Object.assign({}, params, { // Extra params
       routeName: name,
-      pageName: page,
+      pageName: page
     })
+
+    console.log('---> NEW ROUTE', this)
   }
 
   match (path) {
-    const values = this.regex.exec(path)
+    const values = this.regex.exec(decodeURIComponent(path))
     if (values) {
       return this.valuesToParams(values.slice(1))
     }
@@ -152,7 +154,7 @@ class Route {
   }
 
   getAs (params = {}) {
-    const as = this.toPath(params)
+    const as = this.toPath(params) || '/'
     const keys = Object.keys(params)
     const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1 && key !== 'routeName' && key !== 'pageName')
 
@@ -173,13 +175,16 @@ class Route {
   }
 }
 
-const toQuerystring = obj => Object.keys(obj).map(key => {
-  let value = obj[key]
-  if (Array.isArray(value)) {
-    value = value.join('/')
-  }
-  return [
-    encodeURIComponent(key),
-    encodeURIComponent(value)
-  ].join('=')
-}).join('&')
+const toQuerystring = obj => Object.keys(obj)
+  .filter(key => obj[key] !== null && obj[key] !== undefined)
+  .map(key => {
+    let value = obj[key]
+
+    if (Array.isArray(value)) {
+      value = value.join('/')
+    }
+    return [
+      encodeURIComponent(key),
+      encodeURIComponent(value)
+    ].join('=')
+  }).join('&')

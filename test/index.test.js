@@ -56,16 +56,30 @@ describe('Routes', () => {
   })
 
   test('match and merge params into query', () => {
-    const routes = nextRoutes().add('a').add('b', '/b/:b').add('c')
-    expect(routes.match('/b/b?b=x&c=c').query).toMatchObject({b: 'b', c: 'c'})
+    const routes = nextRoutes().add('a').add('b', '/:a?/b/:b').add('c')
+    const {query} = routes.match('/b/b?b=x&c=c')
+    expect(query).toMatchObject({b: 'b', c: 'c'})
+    expect(query).not.toHaveProperty('a')
   })
 
   test('generate urls from params', () => {
     const {route} = setup('a', '/a/:b/:c+')
     const params = {b: 'b', c: [1, 2], d: 'd'}
-    const expected = {as: '/a/b/1/2?d=d', href: '/a?routeName=a&b=b&c=1%2F2&d=d'}
+    const expected = {as: '/a/b/1/2?d=d', href: '/a?routeName=a&pageName=a&b=b&c=1%2F2&d=d'}
     expect(route.getUrls(params)).toEqual(expected)
-    expect(setup('a').route.getUrls()).toEqual({as: '/a', href: '/a?routeName=a'})
+    expect(setup('a').route.getUrls()).toEqual({as: '/a', href: '/a?routeName=a&pageName=a'})
+  })
+
+  test('do not pass "null" for params that have null values', () => {
+    const {route} = setup('a', '/a/:b/:c?')
+    const params = {b: 'b', c: null, d: undefined}
+    const expected = {as: '/a/b?', href: '/a?routeName=a&pageName=a&b=b'}
+    expect(route.getUrls(params)).toEqual(expected)
+    expect(setup('a').route.getUrls()).toEqual({as: '/a', href: '/a?routeName=a&pageName=a'})
+  })
+
+  test('ensure "as" when path match is empty', () => {
+    expect(setup('a', '/:a?').route.getAs()).toEqual('/')
   })
 
   test('with custom Link and Router', () => {
